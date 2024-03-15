@@ -1,0 +1,23 @@
+services:
+  primary:
+    image: postgres:16
+    user: postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: postgres -c "config_file=/etc/postgresql/postgresql.conf"
+    volumes:
+      - ./primary.conf:/etc/postgresql/postgresql.conf
+      - ./initialize_primary.sh:/docker-entrypoint-initdb.d/initialize.sh
+      - backups:/opt/backups
+  standby:
+    image: postgres:16
+    user: postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: postgres -c "config_file=/etc/postgresql/postgresql.conf"
+    volumes:
+      - ./standby.conf:/etc/postgresql/postgresql.conf
+      - ./initialize_standby.sh:/docker-entrypoint-initdb.d/initialize.sh
+      - backups:/opt/backups
+volumes:
+  backups:
